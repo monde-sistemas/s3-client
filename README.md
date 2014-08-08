@@ -15,7 +15,15 @@ if the checksum doesn't match the file will be overwritten on S3.
 
 ## Usage
 
-    s3client.exe -b bucket_name -f file.zip
+    s3client.exe -b bucket_name -f file.zip -d s3/directory
+
+### Flags
+
+- **-b** S3 bucket name to upload to. Ex: my-s3-bucket
+- **-f** Full or relative local path to the file to be uploaded. Ex: C:\Path\to\file.exe
+- **-d** Directory to put the file on s3. Ex: my_dir (optional)
+
+If a directory is specified using the -d flag it will be created on S3 if not exists.
 
 ## AWS Authentication
 

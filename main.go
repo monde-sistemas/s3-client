@@ -6,6 +6,7 @@ import (
 	"github.com/mitchellh/goamz/aws"
 	"github.com/mitchellh/goamz/s3"
 	"log"
+	"os"
 )
 
 const (
@@ -17,11 +18,13 @@ const (
 var (
 	bucketName string
 	filePath   string
+	remoteDir  string
 )
 
 func init() {
 	flag.StringVar(&bucketName, "b", "", "S3 Bucket Name")
 	flag.StringVar(&filePath, "f", "", "Path to the file to be uploaded")
+	flag.StringVar(&remoteDir, "d", "", "Remote directory")
 }
 
 func main() {
@@ -29,6 +32,7 @@ func main() {
 
 	if filePath == "" || bucketName == "" {
 		flag.Usage()
+		os.Exit(1)
 	}
 
 	auth, err := aws.EnvAuth()
@@ -54,15 +58,22 @@ func canUploadAsMultipart(bucket *s3.Bucket, file *progress.ProgressFileReader) 
 	return file.FileInfo.Size() > minMultiPartUploadSize
 }
 
+func s3FileName(file *progress.ProgressFileReader) string {
+	if remoteDir != "" {
+		return remoteDir + "/" + file.FileInfo.Name()
+	}
+	return file.FileInfo.Name()
+}
+
 func upload(bucket *s3.Bucket, file *progress.ProgressFileReader) {
-	err := bucket.PutReader(file.FileInfo.Name(), file, file.FileInfo.Size(), "", "")
+	err := bucket.PutReader(s3FileName(file), file, file.FileInfo.Size(), "", "")
 	if err != nil {
 		log.Fatalf("Error uploading to S3: %s", err)
 	}
 }
 
 func uploadAsMultiPart(bucket *s3.Bucket, file *progress.ProgressFileReader) {
-	multi, err := bucket.Multi(file.FileInfo.Name(), "", "")
+	multi, err := bucket.Multi(s3FileName(file), "", "")
 	if err != nil {
 		log.Fatalf("Error starting mutipart upload: %s", err)
 	}
