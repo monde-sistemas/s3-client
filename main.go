@@ -2,9 +2,9 @@ package main
 
 import (
 	"flag"
-	"github.com/cadena-monde/s3client/progress"
 	"github.com/mitchellh/goamz/aws"
 	"github.com/mitchellh/goamz/s3"
+	"github.com/monde-sistemas/s3-client/progress"
 	"log"
 	"os"
 )
