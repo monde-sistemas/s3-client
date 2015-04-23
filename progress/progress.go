@@ -3,7 +3,7 @@
 package progress
 
 import (
-	"github.com/cheggaaa/pb"
+	"github.com/monde-sistemas/pb"
 	"log"
 	"os"
 )
@@ -15,7 +15,7 @@ type ProgressFileReader struct {
 }
 
 func (pr ProgressFileReader) ReadAt(p []byte, off int64) (n int, err error) {
-	pr.bar.Set(int(off))
+	pr.bar.Set64(off)
 	return pr.file.ReadAt(p, off)
 }
 
@@ -41,7 +41,9 @@ func (pr *ProgressFileReader) Open(filePath string) {
 		f.Close()
 		log.Fatalf("Error reading file info %s: %s", filePath, err)
 	}
-	pr.bar = pb.StartNew(int(pr.FileInfo.Size())).SetUnits(pb.U_BYTES)
+	pr.bar = pb.New64(pr.FileInfo.Size())
+	pr.bar.SetUnits(pb.U_BYTES)
+	pr.bar.Start()
 }
 
 func (pr ProgressFileReader) Close() {
