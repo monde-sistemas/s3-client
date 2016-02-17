@@ -2,11 +2,12 @@ package main
 
 import (
 	"flag"
+	"log"
+	"os"
+
 	"github.com/mitchellh/goamz/aws"
 	"github.com/mitchellh/goamz/s3"
 	"github.com/monde-sistemas/s3-client/progress"
-	"log"
-	"os"
 )
 
 const (
@@ -19,12 +20,14 @@ var (
 	bucketName string
 	filePath   string
 	remoteDir  string
+	region     string
 )
 
 func init() {
 	flag.StringVar(&bucketName, "b", "", "S3 Bucket Name")
 	flag.StringVar(&filePath, "f", "", "Path to the file to be uploaded")
 	flag.StringVar(&remoteDir, "d", "", "Remote directory")
+	flag.StringVar(&region, "r", "us-east-1", "S3 region")
 }
 
 func main() {
@@ -40,7 +43,12 @@ func main() {
 		log.Fatalf("Error reading authentication info: %s", err.Error())
 	}
 
-	s := s3.New(auth, aws.USEast)
+	awsRegion, ok := aws.Regions[region]
+	if !ok {
+		log.Fatalf("Invalid AWS region: %s", region)
+	}
+
+	s := s3.New(auth, awsRegion)
 	bucket := s.Bucket(bucketName)
 
 	file := new(progress.ProgressFileReader)
