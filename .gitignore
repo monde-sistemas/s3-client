@@ -2,7 +2,7 @@
 *.o
 *.a
 *.so
-
+s3-client
 # Folders
 _obj
 _test
