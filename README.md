@@ -19,9 +19,10 @@ if the checksum doesn't match the file will be overwritten on S3.
 
 ### Flags
 
-- **-b** S3 bucket name to upload to. Ex: my-s3-bucket
-- **-f** Full or relative local path to the file to be uploaded. Ex: C:\Path\to\file.exe
-- **-d** Directory to put the file on s3. Ex: my_dir (optional)
+- **-b** S3 bucket name to upload to. Ex: `my-s3-bucket`
+- **-f** Full or relative local path to the file to be uploaded. Ex: `C:\Path\to\file.exe`
+- **-d** Directory to put the file on s3. Ex: `my_dir` (optional)
+- **-r** S3 bucket region. Ex: `sa-east-1`
 
 If a directory is specified using the -d flag it will be created on S3 if not exists.
 
